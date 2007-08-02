@@ -21,7 +21,7 @@ Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-buildroot
 BuildRequires:	ImageMagick
 BuildRequires:	libusb-devel boost-devel openssl-devel
-BuildRequires:	libgtkmm2.4-devel libglademm2.4-devel
+BuildRequires:	gtkmm2.4-devel libglademm2.4-devel
 BuildRequires:	opensync-devel
 
 %description
