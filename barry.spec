@@ -23,6 +23,7 @@ BuildRequires:	ImageMagick
 BuildRequires:	libusb-devel boost-devel openssl-devel
 BuildRequires:	gtkmm2.4-devel libglademm2.4-devel
 BuildRequires:	opensync-devel
+BuildRequires:	libtar-devel
 
 %description
 Barry is a GPL C++ library for interfacing with the RIM BlackBerry Handheld.
