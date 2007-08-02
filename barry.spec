@@ -178,24 +178,25 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog COPYING NEWS README
 %{_sbindir}/breset
 %{_sbindir}/pppob
-%{_bindir}/btools
+%{_bindir}/btool
 %{_bindir}/upldif
 %{_bindir}/ktrans
 %{_bindir}/translate
-%{_mandir}/man1/btool
+%{_mandir}/man1/btool*
 
 %files charge
 %{_sbindir}/bcharge
 %{_sysconfdir}/udev/rules.d/*
 %{_sysconfdir}/security/console.perms.d/*
-%{_mandir}man1/bcharge
+%{_mandir}/man1/bcharge*
 
 %files gui
 %doc gui/AUTHORS gui/ChangeLog gui/COPYING gui/README gui/NEWS gui/TODO
 %{_bindir}/barrybackup
 %{_datadir}/barry/glade/*.glade
 %{_datadir}/applications/*
+%{_iconsdir}/*
 
 %files opensync
 %{_libdir}/opensync/plugins/*
-%{_libdir}/opensync/defaults/*
+%{_datadir}/opensync/defaults/*
