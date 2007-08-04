@@ -1,6 +1,6 @@
 %define name	barry
 %define version	0.8
-%define release %mkrel 0.20070731.1
+%define release %mkrel 1
 
 %define major	0
 %define libname %mklibname %name %major
@@ -11,7 +11,7 @@ Summary: 	Linux interface to RIM BlackBerry devices
 Version: 	%{version}
 Release: 	%{release}
 
-Source:		%{name}-20070731.tar.bz2
+Source:		%{name}-%{version}.tar.bz2
 # (austin) I made this icon (photo) myself.  I hope it's legal.
 Source1:	bb128.png
 Patch:		barry-compile.patch
@@ -88,20 +88,17 @@ This package contains the opensync plugin to synchronize a BlackBerry with
 other devices and applications.
 
 %prep
-%setup -q -n %name
+%setup -q
 cd gui/src
 %patch
 
 %build
-./buildgen.sh
 %configure2_5x
 %make
 cd gui
-./buildgen.sh
 %configure2_5x  PKG_CONFIG_PATH="..:$PKG_CONFIG_PATH" CXXFLAGS="-I../.." LDFLAGS="-L../../src"
 %make
 cd ../opensync-plugin
-./buildgen.sh
 %configure2_5x  PKG_CONFIG_PATH="..:$PKG_CONFIG_PATH" CXXFLAGS="-I../.." LDFLAGS="-L../../src"
 %make
 										
