@@ -118,7 +118,6 @@ cd ../opensync-plugin
 mkdir -p %{buildroot}%{_datadir}/applications
 cat > %{buildroot}%{_datadir}/applications/mandriva-%{name}.desktop << EOF
 [Desktop Entry]
-Encoding=UTF-8
 Name=Barry Backup
 Comment=Backup for BlackBerry devices
 Exec=%{_bindir}/%{name}backup
