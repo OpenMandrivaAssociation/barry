@@ -1,17 +1,19 @@
 %define name	barry
-%define version	0.9
-%define release %mkrel 2
+%define version	0.11
+%define release %mkrel 1
 
 %define major	0
 %define libname %mklibname %name %major
 %define libnamedev %mklibname %name -d
+
+%define build_opensync 0
 
 Name: 	 	%{name}
 Summary: 	Linux interface to RIM BlackBerry devices
 Version: 	%{version}
 Release: 	%{release}
 
-Source:		%{name}-%{version}.tar.bz2
+Source:		http://ovh.dl.sourceforge.net/sourceforge/barry/%{name}-%{version}.tar.bz2
 # (austin) I made this icon (photo) myself.  I hope it's legal.
 Source1:	bb128.png
 Patch:		barry-compile.patch
@@ -22,7 +24,9 @@ BuildRoot:	%{_tmppath}/%{name}-buildroot
 BuildRequires:	ImageMagick
 BuildRequires:	libusb-devel boost-devel openssl-devel
 BuildRequires:	gtkmm2.4-devel libglademm2.4-devel
+%if %build_opensync
 BuildRequires:	opensync-devel
+%endif
 BuildRequires:	libtar-devel
 
 %description
@@ -76,6 +80,7 @@ Group: 	 Communications
 This package contains a graphical applications to backup and restore data
 from a BlackBerry device.
 
+%if %build_opensync
 %package opensync
 Summary: BlackBerry(tm) opensync plugin
 Group:   Communications
@@ -86,6 +91,7 @@ Barry is a desktop toolset for managing your BlackBerry(tm) device.
 
 This package contains the opensync plugin to synchronize a BlackBerry with
 other devices and applications.
+%endif
 
 %prep
 %setup -q
@@ -93,7 +99,12 @@ cd gui/src
 %patch
 
 %build
-%configure2_5x --enable-gui --enable-opensync-plugin
+%configure2_5x --enable-gui \
+%if %build_opensync
+	--enable-opensync-plugin
+%else
+	--disable-opensync-plugin
+%endif
 %make
 										
 %install
@@ -168,8 +179,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/btool
 %{_bindir}/upldif
 %{_bindir}/ktrans
-%{_bindir}/translate
+%{_bindir}/btranslate
+%{_bindir}/bidentify
 %{_mandir}/man1/btool*
+%{_mandir}/man1/bidentify*
 
 %files charge
 %{_sbindir}/bcharge
@@ -184,6 +197,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/*
 %{_iconsdir}/*
 
+%if %build_opensync
 %files opensync
 %{_libdir}/opensync/plugins/*
 %{_datadir}/opensync/defaults/*
+%endif
