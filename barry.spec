@@ -178,7 +178,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/pppob
 %{_bindir}/btool
 %{_bindir}/upldif
-%{_bindir}/ktrans
+%{_bindir}/bktrans
 %{_bindir}/btranslate
 %{_bindir}/bidentify
 %{_mandir}/man1/btool*
