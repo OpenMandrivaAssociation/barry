@@ -20,6 +20,7 @@ Patch:		barry-compile.patch
 URL:		http://www.netdirect.ca/software/packages/barry/
 License:	GPL
 Group:		Communications
+BuildRoot:	%{_tmppath}/%{name}-buildroot
 BuildRequires:	ImageMagick
 BuildRequires:	libusb-devel boost-devel openssl-devel
 BuildRequires:	gtkmm2.4-devel libglademm2.4-devel
