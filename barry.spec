@@ -1,12 +1,12 @@
 %define name	barry
 %define version	0.11
-%define release %mkrel 1
+%define release %mkrel 2
 
 %define major	0
 %define libname %mklibname %name %major
 %define libnamedev %mklibname %name -d
 
-%define build_opensync 0
+%define build_opensync 1
 
 Name: 	 	%{name}
 Summary: 	Linux interface to RIM BlackBerry devices
@@ -18,14 +18,14 @@ Source:		http://ovh.dl.sourceforge.net/sourceforge/barry/%{name}-%{version}.tar.
 Source1:	bb128.png
 Patch:		barry-compile.patch
 URL:		http://www.netdirect.ca/software/packages/barry/
-License:	GPL
+License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-buildroot
 BuildRequires:	ImageMagick
 BuildRequires:	libusb-devel boost-devel openssl-devel
 BuildRequires:	gtkmm2.4-devel libglademm2.4-devel
 %if %build_opensync
-BuildRequires:	opensync-devel
+BuildRequires:	opensync0-devel
 %endif
 BuildRequires:	libtar-devel
 
