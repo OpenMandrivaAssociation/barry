@@ -1,22 +1,17 @@
-%define name	barry
-%define version	0.11
-%define release %mkrel 2
+%define major		0
+%define libname		%mklibname %name %major
+%define libnamedev	%mklibname %name -d
 
-%define major	0
-%define libname %mklibname %name %major
-%define libnamedev %mklibname %name -d
+%define build_opensync	1
 
-%define build_opensync 1
-
-Name: 	 	%{name}
+Name: 	 	barry
 Summary: 	Linux interface to RIM BlackBerry devices
-Version: 	%{version}
-Release: 	%{release}
-
-Source:		http://ovh.dl.sourceforge.net/sourceforge/barry/%{name}-%{version}.tar.bz2
+Version: 	0.12
+Release: 	%{mkrel 1}
+Source0:	http://ovh.dl.sourceforge.net/sourceforge/barry/%{name}-%{version}.tar.bz2
 # (austin) I made this icon (photo) myself.  I hope it's legal.
 Source1:	bb128.png
-Patch:		barry-compile.patch
+Patch0:		barry-compile.patch
 URL:		http://www.netdirect.ca/software/packages/barry/
 License:	GPLv2+
 Group:		Communications
@@ -25,7 +20,7 @@ BuildRequires:	ImageMagick
 BuildRequires:	libusb-devel boost-devel openssl-devel
 BuildRequires:	gtkmm2.4-devel libglademm2.4-devel
 %if %build_opensync
-BuildRequires:	opensync0-devel
+BuildRequires:	libopensync-devel
 %endif
 BuildRequires:	libtar-devel
 
@@ -37,22 +32,22 @@ making quick backups and udev rules which allow the device to be charged
 via a USB port.
 
 %package -n 	%{libname}
-Summary:        Dynamic libraries from %name
+Summary:        Dynamic libraries from %{name}
 Group:          System/Libraries
 
 %description -n %{libname}
-Dynamic libraries from %name.
+Dynamic libraries from %{name}.
 
 %package -n 	%{libnamedev}
-Summary: 	Header files and static libraries from %name
+Summary: 	Header files and static libraries from %{name}
 Group: 		Development/C
 Requires: 	%{libname} >= %{version}
 Provides: 	lib%{name}-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release} 
-Obsoletes: 	%name-devel
+Obsoletes: 	%{name}-devel
 
 %description -n %{libnamedev}
-Libraries and includes files for developing programs based on %name.
+Libraries and includes files for developing programs based on %{name}.
 
 %package tools
 Summary: BlackBerry(tm) Tools
@@ -96,11 +91,12 @@ other devices and applications.
 %prep
 %setup -q
 cd gui/src
-%patch
+%patch0
 
 %build
 %configure2_5x --enable-gui \
-%if %build_opensync
+	--enable-boost \
+%if %{build_opensync}
 	--enable-opensync-plugin
 %else
 	--disable-opensync-plugin
@@ -108,7 +104,7 @@ cd gui/src
 %make
 										
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 %makeinstall_std
 mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
 cp udev/10-blackberry.rules %{buildroot}%{_sysconfdir}/udev/rules.d/
@@ -126,43 +122,33 @@ Icon=%{name}
 Terminal=false
 Type=Application
 StartupNotify=true
-Categories=GTK;Utility;Office;PDA;X-MandrivaLinux-Office-Communications-Phone;
+Categories=GTK;Utility;Office;PDA;
 EOF
 
-# old icons
-mkdir -p $RPM_BUILD_ROOT/%_liconsdir
-convert -size 48x48 %SOURCE1 $RPM_BUILD_ROOT/%_liconsdir/%name.png
-mkdir -p $RPM_BUILD_ROOT/%_iconsdir
-convert -size 32x32 %SOURCE1 $RPM_BUILD_ROOT/%_iconsdir/%name.png
-mkdir -p $RPM_BUILD_ROOT/%_miconsdir
-convert -size 16x16 %SOURCE1 $RPM_BUILD_ROOT/%_miconsdir/%name.png
-
-mkdir -p %buildroot/%_iconsdir/hicolor/16x16/apps
-convert %SOURCE1 $RPM_BUILD_ROOT/%_iconsdir/hicolor/16x16/apps/%name.png
-mkdir -p %buildroot/%_iconsdir/hicolor/32x32/apps
-convert %SOURCE1 $RPM_BUILD_ROOT/%_iconsdir/hicolor/32x32/apps/%name.png
-mkdir -p %buildroot/%_iconsdir/hicolor/48x48/apps
-convert %SOURCE1 $RPM_BUILD_ROOT/%_iconsdir/hicolor/48x48/apps/%name.png
-mkdir -p %buildroot/%_iconsdir/hicolor/64x64/apps
-convert %SOURCE1 $RPM_BUILD_ROOT/%_iconsdir/hicolor/64x64/apps/%name.png
-mkdir -p %buildroot/%_iconsdir/hicolor/128x128/apps
-cp %SOURCE1 $RPM_BUILD_ROOT/%_iconsdir/hicolor/128x128/apps/%name.png
+mkdir -p %{buildroot}/%{_iconsdir}/hicolor/{16x16,32x32,48x48,64x64,128x128}/apps
+convert -scale 16 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/16x16/apps/%{name}.png
+convert -scale 32 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/32x32/apps/%{name}.png
+convert -scale 48 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/48x48/apps/%{name}.png
+convert -scale 64 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/64x64/apps/%{name}.png
+install -m 0644 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/128x128/apps/%{name}.png
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %post
-%update_menus
+%{update_menus}
+%{update_icon_cache hicolor}
 		
 %postun
-%clean_menus
+%{clean_menus}
+%{clean_icon_cache hicolor}
 
 %post -n %{libname} -p /sbin/ldconfig
 %postun -n %{libname} -p /sbin/ldconfig
 
 %files -n %{libname}
 %defattr(-,root,root)
-%{_libdir}/*.so.*
+%{_libdir}/*.so.%{major}*
 
 %files -n %{libnamedev}
 %defattr(-,root,root)
@@ -173,7 +159,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/*.pc
 
 %files tools
-%doc AUTHORS ChangeLog COPYING NEWS README
+%doc AUTHORS ChangeLog NEWS README
 %{_sbindir}/breset
 %{_sbindir}/pppob
 %{_bindir}/btool
@@ -183,6 +169,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/bidentify
 %{_mandir}/man1/btool*
 %{_mandir}/man1/bidentify*
+%{_mandir}/man1/bs11nread*
 
 %files charge
 %{_sbindir}/bcharge
@@ -191,13 +178,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/bcharge*
 
 %files gui
-%doc gui/AUTHORS gui/ChangeLog gui/COPYING gui/README gui/NEWS gui/TODO
+%doc gui/AUTHORS gui/ChangeLog gui/README gui/NEWS gui/TODO
 %{_bindir}/barrybackup
 %{_datadir}/barry/glade/*.glade
 %{_datadir}/applications/*
 %{_iconsdir}/*
 
-%if %build_opensync
+%if %{build_opensync}
 %files opensync
 %{_libdir}/opensync/plugins/*
 %{_datadir}/opensync/defaults/*
