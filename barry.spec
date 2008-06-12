@@ -135,13 +135,17 @@ install -m 0644 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/128x128/apps/%{name
 %clean
 rm -rf %{buildroot}
 
+%if %mdkversion < 200900
 %post
 %{update_menus}
 %{update_icon_cache hicolor}
+%endif
 		
+%if %mdkversion < 200900
 %postun
 %{clean_menus}
 %{clean_icon_cache hicolor}
+%endif
 
 %if %mdkversion < 200900
 %post -n %{libname} -p /sbin/ldconfig
