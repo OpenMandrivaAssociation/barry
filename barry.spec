@@ -2,16 +2,32 @@
 %define libname		%mklibname %name %major
 %define libnamedev	%mklibname %name -d
 
+%define cvs	20080626
+%define rel	1
+
+%if %cvs
+%define release		%mkrel 0.%cvs.%rel
+%define distname	%name-%cvs.tar.lzma
+%define dirname		%name
+%else
+%define release		%mkrel %rel
+%define distname	%name-%version.tar.bz2
+%define dirname		%name-%version
+%endif
+
 %define build_opensync	1
 
 Name: 	 	barry
 Summary: 	Linux interface to RIM BlackBerry devices
-Version: 	0.12
-Release: 	%{mkrel 1}
-Source0:	http://ovh.dl.sourceforge.net/sourceforge/barry/%{name}-%{version}.tar.bz2
+Version: 	0.13
+Release: 	%{release}
+Source0:	http://ovh.dl.sourceforge.net/sourceforge/barry/%{distname}
 # (austin) I made this icon (photo) myself.  I hope it's legal.
 Source1:	bb128.png
 Patch0:		barry-compile.patch
+# build scripts for gui are broken, refer to non-existent files
+# - AdamW 2008/06
+Patch1:		barry-20080626-guibuild.patch
 URL:		http://www.netdirect.ca/software/packages/barry/
 License:	GPLv2+
 Group:		Communications
@@ -88,12 +104,26 @@ This package contains the opensync plugin to synchronize a BlackBerry with
 other devices and applications.
 %endif
 
+%package ppp
+Summary: BlackBerry(tm) PPP support utility and example scripts
+Group: 	 Communications
+
+%description ppp
+This package contains a utility which enables the use of BlackBerry
+devices as cellular data modems, and also contains example PPP scripts
+for this purpose.
+
 %prep
-%setup -q
-cd gui/src
+%setup -q -n %{dirname}
+pushd gui/src
 %patch0
+popd
+%patch1 -p1 -b .guibuild
 
 %build
+%if %cvs
+./buildgen.sh
+%endif
 %configure2_5x --enable-gui \
 	--enable-boost \
 %if %{build_opensync}
@@ -169,8 +199,8 @@ rm -rf %{buildroot}
 %files tools
 %doc AUTHORS ChangeLog NEWS README
 %{_sbindir}/breset
-%{_sbindir}/pppob
 %{_bindir}/btool
+%{_bindir}/brecsum
 %{_bindir}/upldif
 %{_bindir}/bktrans
 %{_bindir}/btranslate
@@ -178,6 +208,9 @@ rm -rf %{buildroot}
 %{_mandir}/man1/btool*
 %{_mandir}/man1/bidentify*
 %{_mandir}/man1/bs11nread*
+%{_mandir}/man1/brecsum*
+%{_mandir}/man1/breset*
+%{_mandir}/man1/upldif*
 
 %files charge
 %{_sbindir}/bcharge
@@ -197,3 +230,9 @@ rm -rf %{buildroot}
 %{_libdir}/opensync/plugins/*
 %{_datadir}/opensync/defaults/*
 %endif
+
+%files ppp
+%doc ppp/{README,barry-*}
+%{_sbindir}/pppob
+%{_mandir}/man1/pppob*
+
