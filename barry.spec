@@ -3,7 +3,7 @@
 %define libnamedev	%mklibname %name -d
 
 %define cvs	20080814
-%define rel	1
+%define rel	2
 
 %if %cvs
 %define release		%mkrel 0.%cvs.%rel
