@@ -25,9 +25,6 @@ Source0:	http://ovh.dl.sourceforge.net/sourceforge/barry/%{distname}
 # (austin) I made this icon (photo) myself.  I hope it's legal.
 Source1:	bb128.png
 Patch0:		barry-compile.patch
-# build scripts for gui are broken, refer to non-existent files
-# - AdamW 2008/06
-Patch1:		barry-20080626-guibuild.patch
 URL:		http://www.netdirect.ca/software/packages/barry/
 License:	GPLv2+
 Group:		Communications
@@ -118,7 +115,6 @@ for this purpose.
 pushd gui/src
 %patch0
 popd
-%patch1 -p1 -b .guibuild
 
 %build
 %if %cvs
@@ -223,6 +219,7 @@ rm -rf %{buildroot}
 %{_bindir}/barrybackup
 %{_datadir}/barry/glade/*.glade
 %{_datadir}/applications/*
+%{_mandir}/man1/barrybackup*
 %{_iconsdir}/*
 
 %if %{build_opensync}
