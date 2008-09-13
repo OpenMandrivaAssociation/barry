@@ -2,8 +2,8 @@
 %define libname		%mklibname %name %major
 %define libnamedev	%mklibname %name -d
 
-%define cvs	20080814
-%define rel	2
+%define cvs	20080912
+%define rel	1
 
 %if %cvs
 %define release		%mkrel 0.%cvs.%rel
@@ -30,8 +30,10 @@ License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-buildroot
 BuildRequires:	ImageMagick
-BuildRequires:	libusb-devel boost-devel openssl-devel
-BuildRequires:	gtkmm2.4-devel libglademm2.4-devel
+BuildRequires:	libusb-devel
+BuildRequires:	boost-devel
+BuildRequires:	gtkmm2.4-devel
+BuildRequires:	libglademm2.4-devel
 %if %build_opensync
 BuildRequires:	libopensync-devel
 %endif
@@ -55,7 +57,6 @@ Dynamic libraries from %{name}.
 Summary: 	Header files and static libraries from %{name}
 Group: 		Development/C
 Requires: 	%{libname} >= %{version}
-Provides: 	lib%{name}-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release} 
 Obsoletes: 	%{name}-devel
 
@@ -63,8 +64,8 @@ Obsoletes: 	%{name}-devel
 Libraries and includes files for developing programs based on %{name}.
 
 %package tools
-Summary: BlackBerry(tm) Tools
-Group: 	 Communications
+Summary:	BlackBerry(tm) Tools
+Group:		Communications
 
 %description tools
 Barry is a desktop toolset for managing your BlackBerry(tm) device.
@@ -73,16 +74,16 @@ Barry is a desktop toolset for managing your BlackBerry(tm) device.
 This package contains the commandline tools btool, breset and others.
 
 %package charge
-Summary: BlackBerry(tm) Charging Scripts
-Group:	 Communications
+Summary:	BlackBerry(tm) Charging Scripts
+Group:		Communications
 
 %description charge
 This package installs special handshake and udev scripts which allow
 a BlackBerry device to be charged via USB at 500mA.
 
 %package gui
-Summary: BlackBerry(tm) Backup Tool
-Group: 	 Communications
+Summary:	BlackBerry(tm) Backup Tool
+Group:		Communications
 
 %description gui
 This package contains a graphical applications to backup and restore data
@@ -90,8 +91,8 @@ from a BlackBerry device.
 
 %if %build_opensync
 %package opensync
-Summary: BlackBerry(tm) opensync plugin
-Group:   Communications
+Summary:	BlackBerry(tm) opensync plugin
+Group:		Communications
 
 %description opensync
 Barry is a desktop toolset for managing your BlackBerry(tm) device.
@@ -102,8 +103,8 @@ other devices and applications.
 %endif
 
 %package ppp
-Summary: BlackBerry(tm) PPP support utility and example scripts
-Group: 	 Communications
+Summary:	BlackBerry(tm) PPP support utility and example scripts
+Group:		Communications
 
 %description ppp
 This package contains a utility which enables the use of BlackBerry
@@ -136,6 +137,17 @@ mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
 cp udev/10-blackberry.rules %{buildroot}%{_sysconfdir}/udev/rules.d/
 mkdir -p %{buildroot}%{_sysconfdir}/security/console.perms.d
 cp udev/10-blackberry.perms %{buildroot}%{_sysconfdir}/security/console.perms.d/
+
+mkdir -p %{buildroot}%{_sysconfdir}/ppp/peers
+for i in o2ireland rogers sprint tmobileus verizon; do \
+	install -m 0644 ppp/barry-$i %{buildroot}%{_sysconfdir}/ppp/peers/barry-$i; \
+	install -m 0644 ppp/barry-$i.chat %{buildroot}%{_sysconfdir}/ppp/chat-barry-$i; \
+done
+# I know this is ugly, but I don't know how to use $i within a sed
+# command. If you do, just do the obvious to do this all in one sed
+# command in the loop above - AdamW 2008/09
+sed -i -e 's,chatscripts/barry-,ppp/chat-barry-,g' %{buildroot}%{_sysconfdir}/ppp/peers/barry-*
+sed -i -e 's,\.chat,,g' %{buildroot}%{_sysconfdir}/ppp/peers/barry-*
 
 # menu
 mkdir -p %{buildroot}%{_datadir}/applications
@@ -188,8 +200,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %{_includedir}/*
 %{_libdir}/*.so
-%{_libdir}/*.a
-%{_libdir}/*.la
+%{_libdir}/*.*a
 %{_libdir}/pkgconfig/*.pc
 
 %files tools
@@ -229,7 +240,9 @@ rm -rf %{buildroot}
 %endif
 
 %files ppp
-%doc ppp/{README,barry-*}
+%doc ppp/README
 %{_sbindir}/pppob
 %{_mandir}/man1/pppob*
+%{_sysconfdir}/ppp/chat-*
+%{_sysconfdir}/ppp/peers/barry-*
 
