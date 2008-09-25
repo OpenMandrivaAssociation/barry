@@ -2,7 +2,7 @@
 %define libname		%mklibname %name %major
 %define libnamedev	%mklibname %name -d
 
-%define cvs	20080912
+%define cvs	0
 %define rel	1
 
 %if %cvs
