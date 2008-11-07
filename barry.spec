@@ -2,7 +2,7 @@
 %define libname		%mklibname %name %major
 %define libnamedev	%mklibname %name -d
 
-%define cvs	0
+%define cvs	20081106
 %define rel	1
 
 %if %cvs
@@ -19,19 +19,18 @@
 
 Name: 	 	barry
 Summary: 	Linux interface to RIM BlackBerry devices
-Version: 	0.14
+Version: 	0.15
 Release: 	%{release}
 Source0:	http://ovh.dl.sourceforge.net/sourceforge/barry/%{distname}
 # (austin) I made this icon (photo) myself.  I hope it's legal.
 Source1:	bb128.png
-Patch0:		barry-compile.patch
 # This is an ugly hack that makes Barry output vcard phone number
 # type keywords as UPPER CASE not lower case. This is the wrong fix
 # for a bug in the synce opensync plugin which makes it fail to import
 # phone numbers if the vcard key is lower case. The synce plugin
 # should be case insensitive, but I'm not smart enough to fix that. As
 # soon as someone smart does, this hack can be removed. - AdamW 2008/09
-Patch1:		barry-0.14-casehack.patch
+Patch0:		barry-0.15-casehack.patch
 URL:		http://www.netdirect.ca/software/packages/barry/
 License:	GPLv2+
 Group:		Communications
@@ -120,10 +119,7 @@ for this purpose.
 
 %prep
 %setup -q -n %{dirname}
-pushd gui/src
-%patch0
-popd
-%patch1 -p1 -b .casehack
+%patch0 -p1 -b .casehack
 
 %build
 %if %cvs
