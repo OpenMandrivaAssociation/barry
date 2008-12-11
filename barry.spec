@@ -35,7 +35,7 @@ URL:		http://www.netdirect.ca/software/packages/barry/
 License:	GPLv2+
 Group:		Communications
 BuildRoot:	%{_tmppath}/%{name}-buildroot
-BuildRequires:	ImageMagick
+BuildRequires:	imagemagick
 BuildRequires:	libusb-devel
 BuildRequires:	boost-devel
 BuildRequires:	gtkmm2.4-devel
