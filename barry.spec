@@ -2,7 +2,7 @@
 %define libname		%mklibname %name %major
 %define libnamedev	%mklibname %name -d
 
-%define cvs	20081106
+%define cvs	20081223
 %define rel	1
 
 %if %cvs
@@ -19,7 +19,7 @@
 
 Name: 	 	barry
 Summary: 	Linux interface to RIM BlackBerry devices
-Version: 	0.15
+Version: 	0.16
 Release: 	%{release}
 Source0:	http://ovh.dl.sourceforge.net/sourceforge/barry/%{distname}
 # (austin) I made this icon (photo) myself.  I hope it's legal.
@@ -216,6 +216,7 @@ rm -rf %{buildroot}
 %{_bindir}/bktrans
 %{_bindir}/btranslate
 %{_bindir}/bidentify
+%{_bindir}/bfuse
 %{_mandir}/man1/btool*
 %{_mandir}/man1/bidentify*
 %{_mandir}/man1/bs11nread*
