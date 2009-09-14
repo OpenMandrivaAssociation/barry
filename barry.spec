@@ -3,7 +3,7 @@
 %define libnamedev	%mklibname %name -d
 
 %define cvs	20081223
-%define rel	2
+%define rel	3
 
 %if %cvs
 %define release		%mkrel 0.%cvs.%rel
@@ -31,6 +31,7 @@ Source1:	bb128.png
 # should be case insensitive, but I'm not smart enough to fix that. As
 # soon as someone smart does, this hack can be removed. - AdamW 2008/09
 Patch0:		barry-0.15-casehack.patch
+Patch1:		barry-gcc4.4.patch
 URL:		http://www.netdirect.ca/software/packages/barry/
 License:	GPLv2+
 Group:		Communications
@@ -121,6 +122,7 @@ for this purpose.
 %prep
 %setup -q -n %{dirname}
 %patch0 -p1 -b .casehack
+%patch1 -p1
 
 %build
 %if %cvs
