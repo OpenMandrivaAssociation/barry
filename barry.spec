@@ -37,6 +37,7 @@ BuildRequires:	libusb-devel
 BuildRequires:	boost-devel
 BuildRequires:	gtkmm2.4-devel
 BuildRequires:	libglademm2.4-devel
+BuildRequires:  gettext-devel
 %if %build_opensync
 BuildRequires:	libopensync-devel
 %endif
