@@ -2,8 +2,8 @@
 %define libname		%mklibname %name %major
 %define libnamedev	%mklibname %name -d
 
-%define cvs	20081223
-%define rel	3
+%define cvs	0
+%define rel	1
 
 %if %cvs
 %define release		%mkrel 0.%cvs.%rel
@@ -24,14 +24,10 @@ Release: 	%{release}
 Source0:	http://ovh.dl.sourceforge.net/sourceforge/barry/%{distname}
 # (austin) I made this icon (photo) myself.  I hope it's legal.
 Source1:	bb128.png
-# This is an ugly hack that makes Barry output vcard phone number
-# type keywords as UPPER CASE not lower case. This is the wrong fix
-# for a bug in the synce opensync plugin which makes it fail to import
-# phone numbers if the vcard key is lower case. The synce plugin
-# should be case insensitive, but I'm not smart enough to fix that. As
-# soon as someone smart does, this hack can be removed. - AdamW 2008/09
-Patch0:		barry-0.15-casehack.patch
-Patch1:		barry-gcc4.4.patch
+# (fc) 0.16-1mdv fix build (GIT)
+Patch0:		barry-0.16-fixbuild.patch
+# (fc) 0.16-1mdv fix udev ACL (GIT) (Mdv bug #56664)
+Patch1:		barry-0.16-udevacl.patch
 URL:		http://www.netdirect.ca/software/packages/barry/
 License:	GPLv2+
 Group:		Communications
@@ -57,6 +53,7 @@ via a USB port.
 %package -n 	%{libname}
 Summary:        Dynamic libraries from %{name}
 Group:          System/Libraries
+Requires:	%{name}-common >= %{version}
 
 %description -n %{libname}
 Dynamic libraries from %{name}.
@@ -80,6 +77,13 @@ Barry is a desktop toolset for managing your BlackBerry(tm) device.
 (BlackBerry is a registered trademark of Research in Motion Limited.)
 
 This package contains the commandline tools btool, breset and others.
+
+%package common
+Summary:	BlackBerry(tm) common files
+Group:		Communications
+
+%description common
+Common files used by Barry.
 
 %package charge
 Summary:	BlackBerry(tm) Charging Scripts
@@ -120,9 +124,12 @@ devices as cellular data modems, and also contains example PPP scripts
 for this purpose.
 
 %prep
-%setup -q -n %{dirname}
-%patch0 -p1 -b .casehack
-%patch1 -p1
+%setup -q 
+%patch0 -p1 -b .fixbuild
+%patch1 -p1 -b .udevacl
+
+#needed by patch0
+autoreconf -i
 
 %build
 %if %cvs
@@ -141,9 +148,7 @@ for this purpose.
 rm -rf %{buildroot}
 %makeinstall_std
 mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
-cp udev/10-blackberry.rules %{buildroot}%{_sysconfdir}/udev/rules.d/
-mkdir -p %{buildroot}%{_sysconfdir}/security/console.perms.d
-cp udev/10-blackberry.perms %{buildroot}%{_sysconfdir}/security/console.perms.d/
+cp udev/{10,69}-blackberry.rules %{buildroot}%{_sysconfdir}/udev/rules.d/
 
 mkdir -p %{buildroot}%{_sysconfdir}/ppp/peers
 for i in o2ireland rogers sprint tmobileus verizon; do \
@@ -211,6 +216,7 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/*.pc
 
 %files tools
+%defattr(-,root,root)
 %doc AUTHORS ChangeLog NEWS README
 %{_sbindir}/breset
 %{_bindir}/btool
@@ -220,20 +226,30 @@ rm -rf %{buildroot}
 %{_bindir}/btranslate
 %{_bindir}/bidentify
 %{_bindir}/bfuse
+%{_bindir}/bdptest
+%{_bindir}/bjavaloader
+%{_bindir}/bjdwp
+%{_bindir}/brimtrans
+%{_bindir}/bs11nread
+%{_bindir}/bjvmdebug
 %{_mandir}/man1/btool*
 %{_mandir}/man1/bidentify*
 %{_mandir}/man1/bs11nread*
 %{_mandir}/man1/brecsum*
 %{_mandir}/man1/breset*
 %{_mandir}/man1/upldif*
+%{_mandir}/man1/bfuse*
+%{_mandir}/man1/bjavaloader*
+%{_mandir}/man1/bjdwp*
 
 %files charge
+%defattr(-,root,root)
 %{_sbindir}/bcharge
-%{_sysconfdir}/udev/rules.d/*
-%{_sysconfdir}/security/console.perms.d/*
+%{_sysconfdir}/udev/rules.d/10-blackberry.rules
 %{_mandir}/man1/bcharge*
 
 %files gui
+%defattr(-,root,root)
 %doc gui/AUTHORS gui/ChangeLog gui/README gui/NEWS gui/TODO
 %{_bindir}/barrybackup
 %{_datadir}/barry/glade/*.glade
@@ -243,14 +259,19 @@ rm -rf %{buildroot}
 
 %if %{build_opensync}
 %files opensync
+%defattr(-,root,root)
 %{_libdir}/opensync/plugins/*
 %{_datadir}/opensync/defaults/*
 %endif
 
 %files ppp
+%defattr(-,root,root)
 %doc ppp/README
 %{_sbindir}/pppob
 %{_mandir}/man1/pppob*
 %{_sysconfdir}/ppp/chat-*
 %{_sysconfdir}/ppp/peers/barry-*
 
+%files common
+%defattr(-,root,root)
+%{_sysconfdir}/udev/rules.d/69-blackberry.rules
