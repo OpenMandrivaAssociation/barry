@@ -3,7 +3,7 @@
 %define libnamedev	%mklibname %name -d
 
 %define cvs	0
-%define rel	2
+%define rel	3
 
 %if %cvs
 %define release		%mkrel 0.%cvs.%rel
