@@ -1,33 +1,16 @@
-%define major		0
+%define major		17
 %define libname		%mklibname %name %major
 %define libnamedev	%mklibname %name -d
-
-%define cvs	0
-%define rel	5
-
-%if %cvs
-%define release		%mkrel 0.%cvs.%rel
-%define distname	%name-%cvs.tar.lzma
-%define dirname		%name
-%else
-%define release		%mkrel %rel
-%define distname	%name-%version.tar.bz2
-%define dirname		%name-%version
-%endif
 
 %define build_opensync	1
 
 Name: 	 	barry
 Summary: 	Linux interface to RIM BlackBerry devices
-Version: 	0.16
-Release: 	%{release}
-Source0:	http://ovh.dl.sourceforge.net/sourceforge/barry/%{distname}
+Version: 	0.17.1
+Release: 	%mkrel 1
+Source0:	http://ovh.dl.sourceforge.net/sourceforge/barry/%{name}-%{version}.tar.bz2
 # (austin) I made this icon (photo) myself.  I hope it's legal.
 Source1:	bb128.png
-# (fc) 0.16-1mdv fix build (GIT)
-Patch0:		barry-0.16-fixbuild.patch
-# (fc) 0.16-1mdv fix udev ACL (GIT) (Mdv bug #56664)
-Patch1:		barry-0.16-udevacl.patch
 URL:		http://www.netdirect.ca/software/packages/barry/
 License:	GPLv2+
 Group:		Communications
@@ -125,17 +108,9 @@ devices as cellular data modems, and also contains example PPP scripts
 for this purpose.
 
 %prep
-%setup -q 
-%patch0 -p1 -b .fixbuild
-%patch1 -p1 -b .udevacl
-
-#needed by patch0
-autoreconf -i
+%setup -q
 
 %build
-%if %cvs
-./buildgen.sh
-%endif
 %configure2_5x --enable-gui \
 	--enable-boost \
 %if %{build_opensync}
@@ -183,6 +158,9 @@ convert -scale 48 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/48x48/apps/%{name
 convert -scale 64 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/64x64/apps/%{name}.png
 install -m 0644 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/128x128/apps/%{name}.png
 
+%find_lang %name-backup
+%find_lang %name
+
 %clean
 rm -rf %{buildroot}
 
@@ -216,7 +194,7 @@ rm -rf %{buildroot}
 %{_libdir}/*.*a
 %{_libdir}/pkgconfig/*.pc
 
-%files tools
+%files tools -f %name.lang
 %defattr(-,root,root)
 %doc AUTHORS ChangeLog NEWS README
 %{_sbindir}/breset
@@ -233,6 +211,10 @@ rm -rf %{buildroot}
 %{_bindir}/brimtrans
 %{_bindir}/bs11nread
 %{_bindir}/bjvmdebug
+%{_bindir}/balxparse
+%{_bindir}/bio
+%{_bindir}/brawchannel
+%{_bindir}/btardump
 %{_mandir}/man1/btool*
 %{_mandir}/man1/bidentify*
 %{_mandir}/man1/bs11nread*
@@ -242,6 +224,10 @@ rm -rf %{buildroot}
 %{_mandir}/man1/bfuse*
 %{_mandir}/man1/bjavaloader*
 %{_mandir}/man1/bjdwp*
+%{_mandir}/man1/balxparse*
+%{_mandir}/man1/bio*
+%{_mandir}/man1/brawchannel*
+%{_mandir}/man1/btardump*
 
 %files charge
 %defattr(-,root,root)
@@ -249,7 +235,7 @@ rm -rf %{buildroot}
 %{_sysconfdir}/udev/rules.d/10-blackberry.rules
 %{_mandir}/man1/bcharge*
 
-%files gui
+%files gui -f %name-backup.lang
 %defattr(-,root,root)
 %doc gui/AUTHORS gui/ChangeLog gui/README gui/NEWS gui/TODO
 %{_bindir}/barrybackup
