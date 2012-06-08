@@ -1,20 +1,20 @@
-%define major		17
-%define libname		%mklibname %name %major
-%define libnamedev	%mklibname %name -d
+%define major	17
+%define libname	%mklibname %{name} %major
+%define devname	%mklibname %{name} -d
 
 %define build_opensync	1
 
-Name: 	 	barry
 Summary: 	Linux interface to RIM BlackBerry devices
+Name: 	 	barry
 Version: 	0.17.1
-Release: 	%mkrel 1
+Release: 	2
+License:	GPLv2+
+Group:		Communications
+URL:		http://www.netdirect.ca/software/packages/barry/
 Source0:	http://ovh.dl.sourceforge.net/sourceforge/barry/%{name}-%{version}.tar.bz2
 # (austin) I made this icon (photo) myself.  I hope it's legal.
 Source1:	bb128.png
-URL:		http://www.netdirect.ca/software/packages/barry/
-License:	GPLv2+
-Group:		Communications
-BuildRoot:	%{_tmppath}/%{name}-buildroot
+
 BuildRequires:	imagemagick
 BuildRequires:	libusb-devel
 BuildRequires:	boost-devel
@@ -43,14 +43,14 @@ Requires:	%{name}-common >= %{version}
 %description -n %{libname}
 Dynamic libraries from %{name}.
 
-%package -n 	%{libnamedev}
+%package -n 	%{devname}
 Summary: 	Header files and static libraries from %{name}
 Group: 		Development/C
 Requires: 	%{libname} >= %{version}
 Provides:	%{name}-devel = %{version}-%{release} 
 Obsoletes: 	%{name}-devel
 
-%description -n %{libnamedev}
+%description -n %{devname}
 Libraries and includes files for developing programs based on %{name}.
 
 %package tools
@@ -112,7 +112,9 @@ for this purpose.
 %setup -q
 
 %build
-%configure2_5x --enable-gui \
+%configure2_5x \
+	--disable-static \
+	--enable-gui \
 	--enable-boost \
 %if %{build_opensync}
 	--enable-opensync-plugin
@@ -122,8 +124,8 @@ for this purpose.
 %make
 										
 %install
-rm -rf %{buildroot}
 %makeinstall_std
+
 mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
 cp udev/{10,69}-blackberry.rules %{buildroot}%{_sysconfdir}/udev/rules.d/
 
@@ -159,44 +161,18 @@ convert -scale 48 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/48x48/apps/%{name
 convert -scale 64 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/64x64/apps/%{name}.png
 install -m 0644 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/128x128/apps/%{name}.png
 
-%find_lang %name-backup
-%find_lang %name
-
-%clean
-rm -rf %{buildroot}
-
-%if %mdkversion < 200900
-%post
-%{update_menus}
-%{update_icon_cache hicolor}
-%endif
-		
-%if %mdkversion < 200900
-%postun
-%{clean_menus}
-%{clean_icon_cache hicolor}
-%endif
-
-%if %mdkversion < 200900
-%post -n %{libname} -p /sbin/ldconfig
-%endif
-%if %mdkversion < 200900
-%postun -n %{libname} -p /sbin/ldconfig
-%endif
+%find_lang %{name}-backup
+%find_lang %{name}
 
 %files -n %{libname}
-%defattr(-,root,root)
 %{_libdir}/*.so.%{major}*
 
-%files -n %{libnamedev}
-%defattr(-,root,root)
+%files -n %{devname}
 %{_includedir}/*
 %{_libdir}/*.so
-%{_libdir}/*.*a
 %{_libdir}/pkgconfig/*.pc
 
-%files tools -f %name.lang
-%defattr(-,root,root)
+%files tools -f %{name}.lang
 %doc AUTHORS ChangeLog NEWS README
 %{_sbindir}/breset
 %{_bindir}/btool
@@ -231,13 +207,11 @@ rm -rf %{buildroot}
 %{_mandir}/man1/btardump*
 
 %files charge
-%defattr(-,root,root)
 %{_sbindir}/bcharge
 %{_sysconfdir}/udev/rules.d/10-blackberry.rules
 %{_mandir}/man1/bcharge*
 
-%files gui -f %name-backup.lang
-%defattr(-,root,root)
+%files gui -f %{name}-backup.lang
 %doc gui/AUTHORS gui/ChangeLog gui/README gui/NEWS gui/TODO
 %{_bindir}/barrybackup
 %{_datadir}/barry/glade/*.glade
@@ -247,13 +221,11 @@ rm -rf %{buildroot}
 
 %if %{build_opensync}
 %files opensync
-%defattr(-,root,root)
 %{_libdir}/opensync/plugins/*
 %{_datadir}/opensync/defaults/*
 %endif
 
 %files ppp
-%defattr(-,root,root)
 %doc ppp/README
 %{_sbindir}/pppob
 %{_mandir}/man1/pppob*
@@ -261,5 +233,5 @@ rm -rf %{buildroot}
 %{_sysconfdir}/ppp/peers/barry-*
 
 %files common
-%defattr(-,root,root)
 %{_sysconfdir}/udev/rules.d/69-blackberry.rules
+
