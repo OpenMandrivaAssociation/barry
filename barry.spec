@@ -1,4 +1,4 @@
-%define major	17
+%define major	18
 %define libname	%mklibname %{name} %major
 %define devname	%mklibname %{name} -d
 
@@ -6,8 +6,8 @@
 
 Summary: 	Linux interface to RIM BlackBerry devices
 Name: 	 	barry
-Version: 	0.17.1
-Release: 	2
+Version: 	0.18.3
+Release: 	1
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.netdirect.ca/software/packages/barry/
@@ -16,12 +16,12 @@ Source0:	http://ovh.dl.sourceforge.net/sourceforge/barry/%{name}-%{version}.tar.
 Source1:	bb128.png
 
 BuildRequires:	imagemagick
-BuildRequires:	libusb-devel
+BuildRequires:	pkgconfig(libusb)
 BuildRequires:	boost-devel
-BuildRequires:	gtkmm2.4-devel
+BuildRequires:	pkgconfig(gtkmm-2.4)
 BuildRequires:	libglademm2.4-devel
 BuildRequires:  gettext-devel
-BuildRequires:	libxml++-devel
+BuildRequires:	pkgconfig(libxml++-2.6)
 %if %build_opensync
 BuildRequires:	libopensync-devel
 %endif
@@ -178,14 +178,16 @@ install -m 0644 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/128x128/apps/%{name
 %{_bindir}/btool
 %{_bindir}/brecsum
 %{_bindir}/upldif
-%{_bindir}/bktrans
-%{_bindir}/btranslate
+#%{_bindir}/bktrans
+#%{_bindir}/btranslate
+#%{_bindir}/brimtrans
+%{_bindir}/btarcmp
+#{_bindir}/bwatch
 %{_bindir}/bidentify
 %{_bindir}/bfuse
 %{_bindir}/bdptest
 %{_bindir}/bjavaloader
 %{_bindir}/bjdwp
-%{_bindir}/brimtrans
 %{_bindir}/bs11nread
 %{_bindir}/bjvmdebug
 %{_bindir}/balxparse
@@ -205,6 +207,8 @@ install -m 0644 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/128x128/apps/%{name
 %{_mandir}/man1/bio*
 %{_mandir}/man1/brawchannel*
 %{_mandir}/man1/btardump*
+%{_mandir}/man1/bwatch*
+%{_mandir}/man1/btarcmp*
 
 %files charge
 %{_sbindir}/bcharge
@@ -234,4 +238,3 @@ install -m 0644 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/128x128/apps/%{name
 
 %files common
 %{_sysconfdir}/udev/rules.d/69-blackberry.rules
-
