@@ -1,13 +1,13 @@
-%define major	18
-%define libname	%mklibname %{name} %major
-%define devname	%mklibname %{name} -d
+%define major 18
+%define libname %mklibname %{name} %major
+%define devname %mklibname %{name} -d
 
-%define build_opensync	1
+%define build_opensync 1
 
-Summary: 	Linux interface to RIM BlackBerry devices
-Name: 	 	barry
-Version: 	0.18.3
-Release: 	1
+Summary:	Linux interface to RIM BlackBerry devices
+Name:		barry
+Version:	0.18.3
+Release:	2
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.netdirect.ca/software/packages/barry/
@@ -20,7 +20,7 @@ BuildRequires:	pkgconfig(libusb)
 BuildRequires:	boost-devel
 BuildRequires:	pkgconfig(gtkmm-2.4)
 BuildRequires:	libglademm2.4-devel
-BuildRequires:  gettext-devel
+BuildRequires:	gettext-devel
 BuildRequires:	pkgconfig(libxml++-2.6)
 %if %build_opensync
 BuildRequires:	libopensync-devel
@@ -35,20 +35,20 @@ It comes with a command line tool for exploring the device and a GUI for
 making quick backups and udev rules which allow the device to be charged
 via a USB port.
 
-%package -n 	%{libname}
-Summary:        Dynamic libraries from %{name}
-Group:          System/Libraries
+%package -n %{libname}
+Summary:	Dynamic libraries from %{name}
+Group:		System/Libraries
 Requires:	%{name}-common >= %{version}
 
 %description -n %{libname}
 Dynamic libraries from %{name}.
 
-%package -n 	%{devname}
-Summary: 	Header files and static libraries from %{name}
-Group: 		Development/C
-Requires: 	%{libname} >= %{version}
+%package -n %{devname}
+Summary:	Header files and static libraries from %{name}
+Group:		Development/C
+Requires:	%{libname} >= %{version}
 Provides:	%{name}-devel = %{version}-%{release} 
-Obsoletes: 	%{name}-devel
+Obsoletes:	%{name}-devel < %{version}-%{release} 
 
 %description -n %{devname}
 Libraries and includes files for developing programs based on %{name}.
