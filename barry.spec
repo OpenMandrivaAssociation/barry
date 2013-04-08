@@ -6,8 +6,8 @@
 
 Summary:	Linux interface to RIM BlackBerry devices
 Name:		barry
-Version:	0.18.3
-Release:	2
+Version:	0.18.4
+Release:	1
 License:	GPLv2+
 Group:		Communications
 URL:		http://www.netdirect.ca/software/packages/barry/
