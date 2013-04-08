@@ -127,7 +127,7 @@ for this purpose.
 %makeinstall_std
 
 mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
-cp udev/{10,69}-blackberry.rules %{buildroot}%{_sysconfdir}/udev/rules.d/
+cp udev/{10,99}-blackberry*.rules %{buildroot}%{_sysconfdir}/udev/rules.d/
 
 mkdir -p %{buildroot}%{_sysconfdir}/ppp/peers
 for i in o2ireland rogers sprint tmobileus verizon; do \
@@ -212,7 +212,7 @@ install -m 0644 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/128x128/apps/%{name
 
 %files charge
 %{_sbindir}/bcharge
-%{_sysconfdir}/udev/rules.d/10-blackberry.rules
+%{_sysconfdir}/udev/rules.d/*-blackberry*.rules
 %{_mandir}/man1/bcharge*
 
 %files gui -f %{name}-backup.lang
