@@ -212,7 +212,7 @@ install -m 0644 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/128x128/apps/%{name
 
 %files charge
 %{_sbindir}/bcharge
-%{_sysconfdir}/udev/rules.d/*-blackberry*.rules
+%{_sysconfdir}/udev/rules.d/10-blackberry.rules
 %{_mandir}/man1/bcharge*
 
 %files gui -f %{name}-backup.lang
@@ -237,4 +237,4 @@ install -m 0644 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/128x128/apps/%{name
 %{_sysconfdir}/ppp/peers/barry-*
 
 %files common
-%{_sysconfdir}/udev/rules.d/69-blackberry.rules
+%{_sysconfdir}/udev/rules.d/99-blackberry-perms.rules
