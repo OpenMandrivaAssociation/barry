@@ -227,6 +227,8 @@ install -m 0644 %{SOURCE1} %{buildroot}/%{_iconsdir}/hicolor/128x128/apps/%{name
 %files opensync
 %{_libdir}/opensync/plugins/*
 %{_datadir}/opensync/defaults/*
+%lang(es) %{_localedir}/es/LC_MESSAGES/barry-opensync-plugin.mo
+%lang(fr) %{_localedir}/fr/LC_MESSAGES/barry-opensync-plugin.mo
 %endif
 
 %files ppp
