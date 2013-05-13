@@ -23,7 +23,7 @@ BuildRequires:	libglademm2.4-devel
 BuildRequires:	gettext-devel
 BuildRequires:	pkgconfig(libxml++-2.6)
 %if %build_opensync
-BuildRequires:	libopensync-devel
+BuildRequires:	pkgconfig(opensync-1.0)
 %endif
 BuildRequires:	libtar-devel
 BuildRequires:	fuse-devel
