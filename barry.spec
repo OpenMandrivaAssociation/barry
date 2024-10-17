@@ -10,7 +10,7 @@ Version:	0.18.4
 Release:	3
 License:	GPLv2+
 Group:		Communications
-URL:		http://www.netdirect.ca/software/packages/barry/
+URL:		https://www.netdirect.ca/software/packages/barry/
 Source0:	http://ovh.dl.sourceforge.net/sourceforge/barry/%{name}-%{version}.tar.bz2
 # (austin) I made this icon (photo) myself.  I hope it's legal.
 Source1:	bb128.png
